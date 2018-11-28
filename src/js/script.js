@@ -1,185 +1,100 @@
-(function wind() {
-  const input = document.querySelector('.todo__input');
-  const taskContainer = document.querySelector('.todo__task-container');
-  const bottom = document.querySelector('.todo__bottom');
-  const counter = document.querySelector('.todo__counter');
-  const allTab = document.querySelector('.todo__all-tasks');
-  const activeTab = document.querySelector('.todo__active-tasks');
-  const completedTab = document.querySelector('.todo__completed-tasks');
-  const clearActiveButton = document.querySelector('.todo__clear-complated');
-  const tabBattons = document.querySelectorAll('.tab-button');0
-  const tabsContainer = document.querySelector('.todo__tabs');
-  let allTasks = null;
-  let allExisting = null;
-  let completedTasks = null;
+(function game() {
+  const container = document.querySelector('.game');
+  const shuffle = document.querySelector('.shuffle');
+  const startArr = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 'x']];
+  const winСonditionArr = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 'x']];
 
-  function setElements(parentElemm, curentElem) {
-    parentElemm.appendChild(curentElem);
-    curentElem.classList.add('todo__task-text', 'flex-start');
-    curentElem.innerHTML = input.value;
-  }
-
-  /*   */
-  // function setChecked(labelElem, checkElem, taskElem) {
-  //   console.log('OK');
-  //   if (checkElem.checked) {
-  //     labelElem.classList.add('checked-image');
-  //     taskElem.classList.add('checked');
-  //     allExisting = document.querySelectorAll('.todo__task-item').length - document.querySelectorAll('.checked').length;
-  //     counter.innerHTML = `${allExisting} items left`;
-  //   } else {
-  //     labelElem.classList.remove('checked-image');
-  //     taskElem.classList.remove('checked');
-  //     allExisting = document.querySelectorAll('.todo__task-item').length - document.querySelectorAll('.checked').length;
-  //     counter.innerHTML = `${allExisting} items left`;
-  //   }
-  //   return counter;
-  // }
-
-  const setExisting = () => {
-    allExisting = document.querySelectorAll('.todo__task-item').length - document.querySelectorAll('.checked').length;;
-    counter.innerHTML = `${allExisting} items left`;
+  const showFields = (arr) => {
+    for (let i = 0; i < arr.length; i += 1) {
+      for (let j = 0; j < arr[i].length; j += 1) {
+        const cell = document.createElement('div');
+        container.appendChild(cell);
+        arr[i][j] === 'x' ? cell.classList.add('game__empty') : console.log();
+        cell.classList.add(`game__cell--${i}-${j}`, 'game__cell');
+        cell.innerHTML = arr[i][j];
+      }
+      const br = document.createElement('br');
+      container.appendChild(br);
+    }
   };
 
-  const createTaskEventListener = (event) => {
-    if (event.keyCode === 13 && input.value !== '') {
+  const removeOldCells = () => {
+    container.innerHTML = '';
+  };
 
-      const task = document.createElement('li');
-      taskContainer.appendChild(task);
-      task.classList.add('todo__task-item');
+  const sortCells = () => {
+    startArr.sort(() => Math.random() - 0.5);
+    for (let i = 0; i < startArr.length; i += 1) {
+      let j; let temp;
+      for (let k = startArr[i].length - 1; k > 0; k -= 1) {
+        j = Math.floor(Math.random() * (k + 1));
+        temp = startArr[i][j];
+        startArr[i][j] = startArr[i][k];
+        startArr[i][k] = temp;
+      }
+    }
+    removeOldCells();
+    showFields(startArr);
+    container.removeEventListener('click', sortCells);
+  };
 
-      const taskLeftSide = document.createElement('div');
-      task.appendChild(taskLeftSide);
-      taskLeftSide.classList.add('flex-start');
+  const checkWin = () => {
+    function isEqualArray1(a1, a2) {
+      return a1.length == a2.length && a1.every((v, i) => v == a2[i]);
+    }
+    function isEqualArray2(a1, a2) {
+      return a1.length == a2.length && a1.every((v, i) => isEqualArray1(v, a2[i]));
+    }
+    if (isEqualArray2(startArr, winСonditionArr)) {
+      alert('You WIN');
+    }
+  };
 
-      const checkLabel = document.createElement('label');
-      taskLeftSide.appendChild(checkLabel);
-      checkLabel.classList.add('todo__check-label', 'cursor');
-
-      const check = document.createElement('input');
-      check.setAttribute('type', 'checkbox');
-      check.classList.add('hide');
-      checkLabel.appendChild(check);
-
-
-//      checkLabel.addEventListener('click', setChecked(checkLabel, check, task));
-      checkLabel.addEventListener('click', () => {
-        if (check.checked) {
-
-          checkLabel.classList.add('checked-image');
-          task.classList.add('checked');
-          //console.log(document.querySelector('.todo__clear-complated'));
-          allExisting = document.querySelectorAll('.todo__task-item').length - document.querySelectorAll('.checked').length;
-          counter.innerHTML = `${allExisting} items left`;
-          document.querySelectorAll('.checked').length > 0 ? document.querySelector('.todo__clear-complated').classList.add('opacity'): document.querySelector('.todo__clear-complated').classList.remove('opacity'); 
-          // setExisting();
-
-        } else {
-          checkLabel.classList.remove('checked-image');
-          task.classList.remove('checked');
-          //console.log(document.querySelector('.todo__clear-complated'));
-          allExisting = document.querySelectorAll('.todo__task-item').length - document.querySelectorAll('.checked').length;
-          counter.innerHTML = `${allExisting} items left`;
-
-          document.querySelectorAll('.checked').length > 0 ? document.querySelector('.todo__clear-complated').classList.add('opacity'): document.querySelector('.todo__clear-complated').classList.remove('opacity'); 
-          // setExisting();
+  const setChenges = (event) => {
+    const emptyElem = [];
+    for (let i = 0; i < startArr.length; i += 1) {
+      for (let j = 0; j < startArr[i].length; j += 1) {
+        if (startArr[i][j] === 'x') {
+          emptyElem.push(i, j);
         }
-        //return counter;
-      });
-
-
-      const taskText = document.createElement('div');
-      setElements(taskLeftSide, taskText);
-
-      const removeItem = document.createElement('div');
-      task.appendChild(removeItem);
-      removeItem.classList.add('todo__remove-item', 'cursor');
-
-
-      /* remove and add close element on every task */
-      task.addEventListener('mouseover', () => {
-        removeItem.classList.add('opacity');
-      });
-      task.addEventListener('mouseout', () => {
-        removeItem.classList.remove('opacity');
-      });
-
-
-      // const removeItem = document.createElement('div');
-      // task.appendChild(removeItem);
-      // removeItem.classList.add('todo__remove-item');
-      // removeItem.innerHTML = '&#88;';
-
-
-      removeItem.addEventListener('click', () => {
-        removeItem.parentElement.remove();
-        document.querySelectorAll('.checked').length > 0 ? document.querySelector('.todo__clear-complated').classList.add('opacity') : document.querySelector('.todo__clear-complated').classList.remove('opacity');
-        setExisting();
-      });
-
-
-      input.value = '';
-      bottom.classList.remove('hide');
-      setExisting();
-      // counter.innerHTML = `${allExisting} items left`;
-    }
-  };
-
-  const setCurrentButton = (event) => {
-    for (let i = 0; i < tabBattons.length; i += 1) {
-      tabsContainer.classList.remove('current-button');
-      tabBattons[i].classList.remove('current-button');
-    }
-    event.target.classList.add('current-button');
-  };
-
-  const showAll = () => {
-    allTasks = document.querySelectorAll('.todo__task-item');
-    for (let i = 0; i < allTasks.length; i += 1) {
-      allTasks[i].classList.remove('hide');
-    }
-  };
-
-  const showActive = () => {
-    showAll();
-    completedTasks = document.querySelectorAll('.checked');
-    for (let i = 0; i < completedTasks.length; i += 1) {
-      completedTasks[i].classList.add('hide');
-    }
-  };
-
-  const showCompleted = () => {
-    showAll();
-    allTasks = document.querySelectorAll('.todo__task-item');
-    for (let i = 0; i < allTasks.length; i += 1) {
-      if (/checked/.test(allTasks[i].className) !== true) {
-        allTasks[i].classList.add('hide');
       }
     }
-  };
-
-  const clearActive = () => {
-    allTasks = document.querySelectorAll('.todo__task-item');
-    for (let i = 0; i < allTasks.length; i += 1) {
-      if (/checked/.test(allTasks[i].className) === true) {
-        allTasks[i].remove();
-      }
+    switch (event.keyCode) {
+      case 38:
+        if (emptyElem[0] >= 0) {
+          startArr[emptyElem[0]][emptyElem[1]] = startArr[emptyElem[0] + 1][emptyElem[1]];
+          startArr[emptyElem[0] + 1][emptyElem[1]] = 'x';
+        }
+        break;
+      case 40:
+        if (emptyElem[0] < startArr.length) {
+          startArr[emptyElem[0]][emptyElem[1]] = startArr[emptyElem[0] - 1][emptyElem[1]];
+          startArr[emptyElem[0] - 1][emptyElem[1]] = 'x';
+        }
+        break;
+      case 37:
+        if (emptyElem[1] < startArr.length - 1) {
+          startArr[emptyElem[0]][emptyElem[1]] = startArr[emptyElem[0]][emptyElem[1] + 1];
+          startArr[emptyElem[0]][emptyElem[1] + 1] = 'x';
+        }
+        break;
+      case 39:
+        if (emptyElem[1] > 0) {
+          startArr[emptyElem[0]][emptyElem[1]] = startArr[emptyElem[0]][emptyElem[1] - 1];
+          startArr[emptyElem[0]][emptyElem[1] - 1] = 'x';
+        }
+        break;
+      default: break;
     }
+    removeOldCells();
+    showFields(startArr);
+    checkWin();
   };
 
-  const createTask = () => {
-    input.addEventListener('keyup', createTaskEventListener);
+  const gameInit = () => {
+    showFields(startArr);
+    shuffle.addEventListener('click', sortCells);
+    document.addEventListener('keyup', setChenges);
   };
-
-  const todoInit = () => {
-    createTask();
-    allTab.addEventListener('click', showAll);
-    activeTab.addEventListener('click', showActive);
-    completedTab.addEventListener('click', showCompleted);
-    clearActiveButton.addEventListener('click', clearActive);
-    tabsContainer.addEventListener('click', function (event) {
-      setCurrentButton(event);
-    });
-  };
-  todoInit();
+  gameInit();
 }());
