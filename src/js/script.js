@@ -1,6 +1,6 @@
 (function game() {
   const container = document.querySelector('.game');
-  let startArr = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 'x']];
+  const startArr = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 'x']];
   const winСonditionArr = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 'x']];
 
   const showFields = (arr) => {
@@ -50,35 +50,50 @@
   };
 
   const setChenges = (event) => {
-    if (/empty/.test(event.target.className) !== true) {
-      const emptyElem = [];
-      const targetElem = event.target.className.match(/\d+/g);
-      for (let i = 0; i < startArr.length; i += 1) {
-        for (let j = 0; j < startArr[i].length; j += 1) {
-          if (startArr[i][j] === 'x') {
-            emptyElem.push(i, j);
-          }
+    const emptyElem = [];
+    for (let i = 0; i < startArr.length; i += 1) {
+      for (let j = 0; j < startArr[i].length; j += 1) {
+        if (startArr[i][j] === 'x') {
+          emptyElem.push(i, j);
         }
       }
-      if ((targetElem[0] == emptyElem[0] + 1 || targetElem[0] == emptyElem[0] - 1)
-      && targetElem[1] == emptyElem[1]) {
-        startArr[emptyElem[0]][emptyElem[1]] = startArr[targetElem[0]][targetElem[1]];
-        startArr[targetElem[0]][targetElem[1]] = 'x';
-      } else if ((targetElem[1] == emptyElem[1] + 1 || targetElem[1] == emptyElem[1] - 1)
-      && targetElem[0] == emptyElem[0]) {
-        startArr[emptyElem[0]][emptyElem[1]] = startArr[targetElem[0]][targetElem[1]];
-        startArr[targetElem[0]][targetElem[1]] = 'x';
-      }
-      removeOldCells();
-      showFields(startArr);
-      checkWin();
     }
+    switch (event.keyCode) {
+      case 38:
+        if (emptyElem[0] >= 0) {
+          startArr[emptyElem[0]][emptyElem[1]] = startArr[emptyElem[0] + 1][emptyElem[1]];
+          startArr[emptyElem[0] + 1][emptyElem[1]] = 'x';
+        }
+        break;
+      case 40:
+        if (emptyElem[0] < startArr.length) {
+          startArr[emptyElem[0]][emptyElem[1]] = startArr[emptyElem[0] - 1][emptyElem[1]];
+          startArr[emptyElem[0] - 1][emptyElem[1]] = 'x';
+        }
+        break;
+      case 37:
+        if (emptyElem[1] < startArr.length - 1) {
+          startArr[emptyElem[0]][emptyElem[1]] = startArr[emptyElem[0]][emptyElem[1] + 1];
+          startArr[emptyElem[0]][emptyElem[1] + 1] = 'x';
+        }
+        break;
+      case 39:
+        if (emptyElem[1] > 0) {
+          startArr[emptyElem[0]][emptyElem[1]] = startArr[emptyElem[0]][emptyElem[1] - 1];
+          startArr[emptyElem[0]][emptyElem[1] - 1] = 'x';
+        }
+        break;
+      default: break;
+    }
+    removeOldCells();
+    showFields(startArr);
+    checkWin();
   };
 
   const gameInit = () => {
     showFields(startArr);
     container.addEventListener('click', sortCells);
-    container.addEventListener('click', setChenges);
+    document.addEventListener('keyup', setChenges);
   };
   gameInit();
 }());
