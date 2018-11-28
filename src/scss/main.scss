@@ -1,10 +1,16 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 
 .game {
   background: gray;
   border: 1px solid black;
-  display: inline-block;
-  margin: auto;
-  margin-left: 35%; 
+  //display: inline-block;
+  //margin: auto;
+  //margin-left: 35%; 
   font-size: 2vw;
 
   &__cell {
@@ -24,6 +30,6 @@
 
 }
 .shuffle {
-  margin-top: 2%;
-  margin-left: 48%;
+  //margin-top: 2%;
+  //margin-left: 48%;
 }

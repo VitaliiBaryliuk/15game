@@ -1,9 +1,12 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; }
+
 .game {
   background: gray;
   border: 1px solid black;
-  display: inline-block;
-  margin: auto;
-  margin-left: 35%;
   font-size: 2vw; }
   .game__cell {
     display: inline-block;
@@ -16,7 +19,3 @@
     color: orangered; }
   .game__empty {
     background-color: orangered; }
-
-.shuffle {
-  margin-top: 2%;
-  margin-left: 48%; }
